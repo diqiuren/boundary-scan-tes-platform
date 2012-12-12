@@ -7,15 +7,14 @@ var tdi 	= ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
 
 var functions = ["STATE","SDR","SIR","ENDDR","ENDIR","RUNTEST","SELTAP","JMP","JMPE","RSTE","JMPI","SETI","RSTI"];
 var functionsStates = [null,4,11,null,null,11,null,null,null,null,null,null,null];
-//var upCodes = ["0x01","0x02","0x03","0x04","0x05","0x06","0x07","0x08","0x09","0x0A","0x0B","0x0C","0x0D"];	//not used for now... maybe never :P
-/**
+/*
  * Number of arguments of each function
  */
 var maxArgs = [1,5,5,1,1,1,1,1,1,0,2,1,1,0];
 var minArgs = [1,2,2,1,1,1,1,1,1,0,2,1,1,0];
 //var subFunctionsArgs = [state,[label,tdi,tdi,tdi,tdi],[label,tdi,tdi,tdi,tdi],state,state,len,tap,len,len,"0",[pin,len],pin,pin, "0"];  //for an advanced stage of the program
 
-/**
+/*
  * TAP State Machine Controll
  */
 var currentState = 0;
@@ -84,7 +83,6 @@ var i,
  function processPath () {
 	var tms = [];
  	var path = [];
-	var j = 0;
 	var next = [];
 	//alert("dNeigborStates: "+dNeigborStates);
 	next = nextStates[dNeigborStates[dNeigborStates.length-1][0]][dNeigborStates[dNeigborStates.length-1][1]];
@@ -135,10 +133,6 @@ function polishLine (line) {
 	return polishedLine;
 }
 
-//Math.base = function base(n, to, from) {
-     //return parseInt(n, from || 10).toString(to);
-//}
-
 /**
  * Convert an array of parameters and returns an error if there are brakets missing
  */
@@ -160,32 +154,6 @@ function polishParams (params) {
 }
 
 /**
- * Convert from Hex to bin
- */
-function hexToBin(hex) {
-	var div=0;
-	var binary;
-	var temp;
-	var ascii=hex.charCodeAt(0);
-
-	if(ascii >= 65)
-		temp = ascii-55;
-	else
-		temp = ascii;
-	while(temp != 0) {
-		if(temp%2 != 0) {
-			temp = Math.floor(temp/2);
-			binary = binary+"1";
-		}
-		else {
-			temp = temp/2;
-			binary = binary+"0";
-		}
-	}
-	return binary;
-}
-
-/**
  * Check if the function parameters are correct
  */
 function checkParams (params, index) {
@@ -198,7 +166,7 @@ function checkParams (params, index) {
 			return -1;
 		for(var i=2; i<polishedParams.length; i+=2) {
 			if(polishedParams[i] == lastParam)
-				return -1				//repeted parameter
+				return -1;				//repeted parameter
 			lastParam = polishedParams[i];
 			if(scanArgs.indexOf(polishedParams[i]) < 0)
 				return -1;
@@ -244,7 +212,6 @@ function checkSyntax(line) {
 	var params = polishLine (line);
 	var len = params.length-1;
 	var index = functions.indexOf(params[0].toUpperCase());	//get index of the matching keyword on the keywords array
-	var subFuncIndex;
 
 	if(index < 0 && params[0] != "")
 		return -1;					//keyword not foud!
@@ -264,11 +231,8 @@ function makeUrl(text) {
 	var lines = text.split('\n');
 	var params = [];
 	var url = "";
-	var tcks = 0;
-	var tms = [];
 	var sintax = 0;
 	var polishedParams = [];
-	var _nextState;
 	for(var i=0; i< lines.length;i++) {
 	sintax = checkSyntax(lines[i]);
 		if(sintax == -4) {
