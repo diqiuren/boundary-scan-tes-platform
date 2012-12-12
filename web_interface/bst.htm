@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8">
+    <title>BST Test Platform</title>
+    <link type="text/css" rel="stylesheet" href="lib/codemi.css">
+	<link type="text/css" rel="stylesheet" href="theme/ambi.css">
+    <link type="text/css" rel="stylesheet" href="theme/blackb.css">
+    <link type="text/css" rel="stylesheet" href="theme/vibrant.css">
+    <link type="text/css" rel="stylesheet" href="doc/docs.css">
+    <script type="text/JavaScript" src="lib/codemi.js"></script>
+	<script type="text/JavaScript" src="mode/svf.js"></script>
+	<script type="text/JavaScript" src="lib/parser.js"></script>
+    <style type="text/css">
+      .CodeMirror {border: 1px solid #eee;}
+    </style>
+    <style>
+		.right
+			{
+				position:relative;
+				right:70%;
+			}
+	</style>
+  </head>
+  <body>
+    <h1 style="color:#780000;text-align:center">BST Test Platform</h1>
+<div style="width: 70%; float: left">
+	<textarea id="code" name="code"></textarea>
+	<script>
+		var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+			lineNumbers: true,
+			smartIndent: false,
+			autoClearEmptyLines: true,
+			matchBrackets: true,
+			mode: "text/x-svf",
+			onGutterClick: function(cm, n) {
+				var info = cm.lineInfo(n);
+				if (info.markerText)
+					cm.clearMarker(n);
+				else
+					cm.setMarker(n, "<span style=\"color: #900\">●</span> %N%");
+			},
+			onCursorActivity: function(cm) {
+				/*editor.setLineClass(hlLine, null, null);
+				hlLine = editor.setLineClass(editor.getCursor().line, null, "activeline");*/
+				var lines = editor.getValue().split('\n');
+				var info = cm.lineInfo(0);
+
+				for(var i=0; i<lines.length; i++) {
+					var input = document.getElementById("select");
+					var theme = input.options[input.selectedIndex].innerHTML;
+					switch (checkSyntax(lines[i])) {
+						case 1:		//everything OK
+							cm.clearMarker(i, null);
+							break;
+						case -1:	//keyword not foud!
+							if(theme == "ambiance")
+								cm.setMarker(i, "<span><img src='icons/errorbig.png'/></span>");
+							else
+								cm.setMarker(i, "<span><img src='icons/error.png'/></span>");
+							break;
+						case -2:	//too many arguments
+							if(theme == "ambiance")
+								cm.setMarker(i, "<span><img src='icons/manybig.png'/></span>");
+							else
+								cm.setMarker(i, "<span><img src='icons/many.png'/></span>");
+							break;
+						case -3:	//few arguments
+							if(theme == "ambiance")
+								cm.setMarker(i, "<span><img src='icons/fewbig.png'/></span>");
+							else
+								cm.setMarker(i, "<span><img src='icons/few.png'/></span>");
+							break;
+						case -4:
+							if(theme == "ambiance")
+								cm.setMarker(i, "<span><img src='icons/errorbig.png'/></span>");
+							else
+								cm.setMarker(i, "<span><img src='icons/error.png'/></span>");
+							break;
+					}
+				}
+			}
+		});
+
+		function selectTheme() {
+			var input = document.getElementById("select");
+			var theme = input.options[input.selectedIndex].innerHTML;
+			editor.setOption("theme", theme);
+		}
+		var choice = document.location.search && document.location.search.slice(1);
+		if (choice) {
+			input.value = choice;
+			editor.setOption("theme", choice);
+		}
+
+	</script>
+
+	<p>Select a theme: <select onchange="selectTheme()" id=select>
+			<option selected>default</option>
+			<option>ambiance</option>
+			<option>blackboard</option>
+			<option>vibrant-ink</option>
+		</select>
+	</p>
+
+</div>
+<div style="width: 28%; border: 1px solid #eee; float: right">
+<p>Só para testar</p>
+<button onclick="makeUrl(editor.getValue())">Send SHIT!</button>
+</div>
+<footer>
+<table style="width: 100%; ">
+	<tr>
+		<td><p style="color:#780000;text-align:left">SELE - 2012</p></td>
+		<td><p style="text-align:right">André Figueiroa, João Silva &amp; Rui Cunha</p></td>
+	</tr>
+</table>
+
+</footer>
+  </body>
+</html>
