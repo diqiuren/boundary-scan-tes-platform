@@ -1,6 +1,5 @@
 var state 	= ["RESET","IDLE","DRSELECT","DRCAPTURE","DRSHIFT","DREXIT1","DRPAUSE","DREXIT2","DRUPDATE","IRSELECT","IRCAPTURE","IRSHIFT","IREXIT1","IRPAUSE","IREXIT2","IRUPDATE"];
 var scanArgs = ["TDI", "TDO", "MASK", "SMASK"];
-//var len 	= [""];	//from 0 to 65535
 var tap		= ["1","2","BOTH"];
 var pin		= ["0","1"];
 var tdi 	= ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
@@ -15,7 +14,7 @@ var minArgs = [1,2,2,1,1,1,1,1,1,0,2,1,1,0];
 //var subFunctionsArgs = [state,[label,tdi,tdi,tdi,tdi],[label,tdi,tdi,tdi,tdi],state,state,len,tap,len,len,"0",[pin,len],pin,pin, "0"];  //for an advanced stage of the program
 
 /*
- * TAP State Machine Controll
+ * TAP State Machine Control
  */
 var currentState = 0;
 var nextState = 0;
@@ -122,7 +121,7 @@ function polishLine (line) {
 	var polishedLine = _line.split(' ');
 	var len = polishedLine.length;
 	if(polishedLine[len-1] == "" && len > 1) {
-		polishedLine.splice(len-1,1); //remove last sapce of a given line
+		polishedLine.splice(len-1,1); //remove last space of a given line
 	}
 	if(polishedLine[0] == "" && polishedLine.length > 1) {
 		polishedLine.splice(0,1); //remove initial space if any
@@ -134,7 +133,7 @@ function polishLine (line) {
 }
 
 /**
- * Convert an array of parameters and returns an error if there are brakets missing
+ * Convert an array of parameters and returns an error if there are brackets missing
  */
 function polishParams (params) {
 	var polishedParams = [];
@@ -166,7 +165,7 @@ function checkParams (params, index) {
 			return -1;
 		for(var i=2; i<polishedParams.length; i+=2) {
 			if(polishedParams[i] == lastParam)
-				return -1;				//repeted parameter
+				return -1;				//repeated parameter
 			lastParam = polishedParams[i];
 			if(scanArgs.indexOf(polishedParams[i]) < 0)
 				return -1;
@@ -206,7 +205,7 @@ function checkParams (params, index) {
 }
 
 /**
- * Check sintax of a line
+ * Check syntax of a line
  */
 function checkSyntax(line) {
 	var params = polishLine (line);
@@ -214,7 +213,7 @@ function checkSyntax(line) {
 	var index = functions.indexOf(params[0].toUpperCase());	//get index of the matching keyword on the keywords array
 
 	if(index < 0 && params[0] != "")
-		return -1;					//keyword not foud!
+		return -1;					//keyword not found!
 	else if(len-maxArgs[index] > 0)
 		return -2;					//too many arguments
 	else if(len-minArgs[index] < 0)
