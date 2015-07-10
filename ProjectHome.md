@@ -1,0 +1,1 @@
+The project consists on a USB board and a client application to control test integrity of a given boundary scan chain.
